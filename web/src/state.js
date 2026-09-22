@@ -20,3 +20,12 @@ export function addPlayer(state, name) {
 export function total(player) {
   return player.scores.reduce((sum, s) => sum + (s ?? 0), 0);
 }
+
+export function toPar(player) {
+  return player.scores.reduce((sum, s, i) => (s == null ? sum : sum + s - PARS[i]), 0);
+}
+
+export function formatToPar(diff) {
+  if (diff === 0) return "E";
+  return diff > 0 ? `+${diff}` : `${diff}`;
+}

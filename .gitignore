@@ -9,3 +9,5 @@ local.properties
 *.png
 inspect.json
 .appetize/
+shots/
+recordings/

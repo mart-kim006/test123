@@ -1,5 +1,5 @@
 import "./style.css";
-import { PARS, load, save, addPlayer, total } from "./state.js";
+import { PARS, load, save, addPlayer, total, toPar, formatToPar } from "./state.js";
 
 const state = load();
 const app = document.getElementById("app");
@@ -23,9 +23,9 @@ function render() {
         .map(
           (p, i) => `
         <li class="player">
-          <div class="name">${escape(p.name)}<small>Total ${total(p)}</small></div>
+          <div class="name">${escape(p.name)}<small>Total ${total(p)} · <b class="${toParClass(toPar(p))}">${formatToPar(toPar(p))}</b></small></div>
           <button id="minus-${i}" data-minus="${i}" aria-label="Minus ${escape(p.name)}">−</button>
-          <span id="score-${i}" class="score">${p.scores[hole] ?? "–"}</span>
+          <span id="score-${i}" class="score ${p.scores[hole] == null ? "" : toParClass(p.scores[hole] - PARS[hole])}">${p.scores[hole] ?? "–"}</span>
           <button id="plus-${i}" data-plus="${i}" aria-label="Plus ${escape(p.name)}">+</button>
         </li>`,
         )
@@ -36,6 +36,12 @@ function render() {
       <button id="add-player" type="submit">Add</button>
     </form>
   `;
+}
+
+function toParClass(diff) {
+  if (diff < 0) return "under";
+  if (diff > 0) return "over";
+  return "even";
 }
 
 function escape(s) {
@@ -54,10 +60,10 @@ app.addEventListener("click", (e) => {
   else if (t.id === "next-hole") state.hole++;
   else if (t.dataset.plus) {
     const p = state.players[t.dataset.plus];
-    p.scores[state.hole] = (p.scores[state.hole] ?? PARS[state.hole] - 1) + 1;
+    p.scores[state.hole] = (p.scores[state.hole] ?? PARS[state.hole]) + 1;
   } else if (t.dataset.minus) {
     const p = state.players[t.dataset.minus];
-    p.scores[state.hole] = Math.max(1, (p.scores[state.hole] ?? PARS[state.hole] + 1) - 1);
+    p.scores[state.hole] = Math.max(1, (p.scores[state.hole] ?? PARS[state.hole]) - 1);
   } else return;
   update();
 });

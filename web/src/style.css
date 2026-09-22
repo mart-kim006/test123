@@ -20,3 +20,8 @@ h1 { margin: 0; font-size: 22px; }
 .add { display: flex; gap: 8px; padding: 16px; }
 .add input { flex: 1; padding: 10px; font-size: 16px; }
 .add button { padding: 10px 16px; font-size: 16px; }
+.score { border-radius: 50%; height: 36px; line-height: 36px; }
+.score.under { background: #c8e6c9; color: #1b5e20; }
+.score.over { background: #ffe0b2; color: #bf360c; }
+.name b.under { color: #2e7d32; }
+.name b.over { color: #d84315; }

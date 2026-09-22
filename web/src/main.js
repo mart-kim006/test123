@@ -1,5 +1,6 @@
 import "./style.css";
 import { PARS, load, save, addPlayer, total, toPar, formatToPar } from "./state.js";
+import { renderStats } from "./stats.js";
 
 const state = load();
 const app = document.getElementById("app");
@@ -10,6 +11,16 @@ function render() {
     <header>
       <h1>Golf Score</h1>
     </header>
+    <nav class="tabs">
+      <button id="tab-card" class="${state.view === "stats" ? "" : "active"}" aria-label="Scorecard tab">Scorecard</button>
+      <button id="tab-stats" class="${state.view === "stats" ? "active" : ""}" aria-label="Stats tab">Stats</button>
+    </nav>
+    ${state.view === "stats" ? `<section class="stats">${renderStats(state.players, escape)}</section>` : scorecard(hole)}
+  `;
+}
+
+function scorecard(hole) {
+  return `
     <section class="hole">
       <button id="prev-hole" aria-label="Previous hole" ${hole === 0 ? "disabled" : ""}>‹</button>
       <div>
@@ -34,8 +45,7 @@ function render() {
     <form id="add-player-form" class="add">
       <input id="player-name" placeholder="Player name" autocomplete="off" />
       <button id="add-player" type="submit">Add</button>
-    </form>
-  `;
+    </form>`;
 }
 
 function toParClass(diff) {
@@ -56,7 +66,9 @@ function update() {
 app.addEventListener("click", (e) => {
   const t = e.target.closest("button");
   if (!t) return;
-  if (t.id === "prev-hole") state.hole--;
+  if (t.id === "tab-card") state.view = "card";
+  else if (t.id === "tab-stats") state.view = "stats";
+  else if (t.id === "prev-hole") state.hole--;
   else if (t.id === "next-hole") state.hole++;
   else if (t.dataset.plus) {
     const p = state.players[t.dataset.plus];

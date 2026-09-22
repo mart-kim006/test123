@@ -25,3 +25,22 @@ h1 { margin: 0; font-size: 22px; }
 .score.over { background: #ffe0b2; color: #bf360c; }
 .name b.under { color: #2e7d32; }
 .name b.over { color: #d84315; }
+.tabs { display: flex; background: #2e7d32; padding: 0 8px; }
+.tabs button { flex: 1; background: none; border: 0; color: #c8e6c9; font-size: 16px; padding: 12px; border-bottom: 3px solid transparent; }
+.tabs button.active { color: white; border-bottom-color: white; font-weight: 600; }
+.stats { padding: 12px; display: grid; gap: 12px; }
+.empty { text-align: center; color: #666; padding: 32px; }
+.stat-card { background: white; border-radius: 12px; padding: 14px 16px; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.stat-head { display: flex; align-items: center; gap: 10px; }
+.rank { width: 28px; height: 28px; border-radius: 50%; background: #2e7d32; color: white; display: grid; place-items: center; font-weight: 600; }
+.stat-name { flex: 1; font-size: 20px; font-weight: 600; }
+.stat-topar { font-size: 24px; font-weight: 700; }
+.stat-topar.under { color: #2e7d32; }
+.stat-topar.over { color: #d84315; }
+.stat-sub { color: #666; margin: 4px 0 10px 38px; font-size: 14px; }
+.dist { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: #eee; margin-bottom: 10px; }
+.seg.birdie { background: #43a047; } .seg.par { background: #90a4ae; }
+.seg.bogey { background: #ffb74d; } .seg.double { background: #e64a19; }
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0; text-align: center; }
+.stat-grid dt { font-size: 12px; color: #666; } .stat-grid dd { margin: 0; font-size: 20px; font-weight: 600; }
+.stat-best { margin-top: 10px; font-size: 14px; color: #444; }

@@ -1,0 +1,32 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "io.appetize.golf"
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "io.appetize.golf"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+        buildConfigField "String", "DEV_URL", '"http://localhost:5173/"'
+    }
+
+    buildFeatures { buildConfig true }
+
+    sourceSets {
+        main.assets.srcDirs += ["../web/dist"]
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation "androidx.webkit:webkit:1.12.1"
+}

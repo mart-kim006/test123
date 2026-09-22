@@ -1,0 +1,74 @@
+import "./style.css";
+import { PARS, load, save, addPlayer, total } from "./state.js";
+
+const state = load();
+const app = document.getElementById("app");
+
+function render() {
+  const hole = state.hole;
+  app.innerHTML = `
+    <header>
+      <h1>Golf Score</h1>
+    </header>
+    <section class="hole">
+      <button id="prev-hole" aria-label="Previous hole" ${hole === 0 ? "disabled" : ""}>‹</button>
+      <div>
+        <div id="hole-number" class="hole-number">Hole ${hole + 1}</div>
+        <div class="par">Par ${PARS[hole]}</div>
+      </div>
+      <button id="next-hole" aria-label="Next hole" ${hole === PARS.length - 1 ? "disabled" : ""}>›</button>
+    </section>
+    <ul class="players">
+      ${state.players
+        .map(
+          (p, i) => `
+        <li class="player">
+          <div class="name">${escape(p.name)}<small>Total ${total(p)}</small></div>
+          <button id="minus-${i}" data-minus="${i}" aria-label="Minus ${escape(p.name)}">−</button>
+          <span id="score-${i}" class="score">${p.scores[hole] ?? "–"}</span>
+          <button id="plus-${i}" data-plus="${i}" aria-label="Plus ${escape(p.name)}">+</button>
+        </li>`,
+        )
+        .join("")}
+    </ul>
+    <form id="add-player-form" class="add">
+      <input id="player-name" placeholder="Player name" autocomplete="off" />
+      <button id="add-player" type="submit">Add</button>
+    </form>
+  `;
+}
+
+function escape(s) {
+  return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+}
+
+function update() {
+  save(state);
+  render();
+}
+
+app.addEventListener("click", (e) => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  if (t.id === "prev-hole") state.hole--;
+  else if (t.id === "next-hole") state.hole++;
+  else if (t.dataset.plus) {
+    const p = state.players[t.dataset.plus];
+    p.scores[state.hole] = (p.scores[state.hole] ?? PARS[state.hole] - 1) + 1;
+  } else if (t.dataset.minus) {
+    const p = state.players[t.dataset.minus];
+    p.scores[state.hole] = Math.max(1, (p.scores[state.hole] ?? PARS[state.hole] + 1) - 1);
+  } else return;
+  update();
+});
+
+app.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const input = document.getElementById("player-name");
+  const name = input.value.trim();
+  if (!name) return;
+  addPlayer(state, name);
+  update();
+});
+
+render();

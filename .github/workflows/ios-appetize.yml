@@ -1,0 +1,45 @@
+name: iOS build for Appetize
+
+on:
+  push:
+    branches: [main, claude/golf-scoring-appetize-irtw13]
+    paths: [web/**, ios/**, .github/workflows/ios-appetize.yml]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    env:
+      APPETIZE_API_TOKEN: ${{ secrets.APPETIZE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build web app
+        working-directory: web
+        run: |
+          npm ci
+          npm run build:inline
+
+      - name: Build iOS simulator app
+        run: ios/build.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GolfScore-ios-simulator
+          path: ios/build/GolfScore.zip
+
+      - name: Upload to Appetize
+        if: env.APPETIZE_API_TOKEN != ''
+        run: |
+          npx --yes @appetize/cli build upload ios/build/GolfScore.zip \
+            --note "Golf Score iOS ${GITHUB_SHA::7}" --wait > appetize.json
+          cat appetize.json
+          echo "Appetize build: \`$(jq -r .id appetize.json)\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Missing Appetize token
+        if: env.APPETIZE_API_TOKEN == ''
+        run: echo "::warning::Set the APPETIZE_API_TOKEN repository secret to upload builds to Appetize."

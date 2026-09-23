@@ -1,5 +1,5 @@
 import "./style.css";
-import { PARS, load, save, addPlayer, total, toPar, formatToPar } from "./state.js";
+import { PARS, SUGGESTED_NAMES, load, save, addPlayer, total, toPar, formatToPar } from "./state.js";
 import { renderStats } from "./stats.js";
 
 const state = load();
@@ -45,7 +45,17 @@ function scorecard(hole) {
     <form id="add-player-form" class="add">
       <input id="player-name" placeholder="Player name" autocomplete="off" />
       <button id="add-player" type="submit">Add</button>
-    </form>`;
+    </form>
+    ${suggestions()}`;
+}
+
+function suggestions() {
+  const taken = new Set(state.players.map((p) => p.name.toLowerCase()));
+  const names = SUGGESTED_NAMES.filter((n) => !taken.has(n.toLowerCase()));
+  if (!names.length) return "";
+  return `<div class="suggest">${names
+    .map((n) => `<button data-suggest="${n}" aria-label="Add ${n}">+ ${n}</button>`)
+    .join("")}</div>`;
 }
 
 function toParClass(diff) {
@@ -70,6 +80,7 @@ app.addEventListener("click", (e) => {
   else if (t.id === "tab-stats") state.view = "stats";
   else if (t.id === "prev-hole") state.hole--;
   else if (t.id === "next-hole") state.hole++;
+  else if (t.dataset.suggest) addPlayer(state, t.dataset.suggest);
   else if (t.dataset.plus) {
     const p = state.players[t.dataset.plus];
     p.scores[state.hole] = (p.scores[state.hole] ?? PARS[state.hole]) + 1;

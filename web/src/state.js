@@ -1,4 +1,5 @@
 const KEY = "golf-score:v1";
+export const SUGGESTED_NAMES = ["Alex", "Sam", "Jordan", "Taylor", "Casey", "Morgan", "Riley", "Jamie"];
 export const PARS = [4, 4, 3, 5, 4, 4, 3, 4, 5, 4, 3, 4, 5, 4, 4, 3, 4, 5];
 
 export function load() {

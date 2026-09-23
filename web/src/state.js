@@ -10,7 +10,9 @@ export function load() {
 }
 
 export function save(state) {
-  localStorage.setItem(KEY, JSON.stringify(state));
+  try {
+    localStorage.setItem(KEY, JSON.stringify(state));
+  } catch {}
 }
 
 export function addPlayer(state, name) {

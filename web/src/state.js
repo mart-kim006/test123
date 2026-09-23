@@ -1,0 +1,34 @@
+const KEY = "golf-score:v1";
+export const SUGGESTED_NAMES = ["Alex", "Sam", "Jordan", "Taylor", "Casey", "Morgan", "Riley", "Jamie"];
+export const PARS = [4, 4, 3, 5, 4, 4, 3, 4, 5, 4, 3, 4, 5, 4, 4, 3, 4, 5];
+
+export function load() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY));
+    if (saved && Array.isArray(saved.players)) return saved;
+  } catch {}
+  return { hole: 0, players: [] };
+}
+
+export function save(state) {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(state));
+  } catch {}
+}
+
+export function addPlayer(state, name) {
+  state.players.push({ name, scores: Array(PARS.length).fill(null) });
+}
+
+export function total(player) {
+  return player.scores.reduce((sum, s) => sum + (s ?? 0), 0);
+}
+
+export function toPar(player) {
+  return player.scores.reduce((sum, s, i) => (s == null ? sum : sum + s - PARS[i]), 0);
+}
+
+export function formatToPar(diff) {
+  if (diff === 0) return "E";
+  return diff > 0 ? `+${diff}` : `${diff}`;
+}
